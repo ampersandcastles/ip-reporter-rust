@@ -70,7 +70,7 @@ To build and run this project, you need to have Rust installed. If you don't hav
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0. See the [license](license) file for details.
 
 ## Contributions
 
