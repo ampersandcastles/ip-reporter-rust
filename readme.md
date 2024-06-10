@@ -2,6 +2,8 @@
 
 IP Reporter is a desktop application built with Rust and GTK that listens for specific UDP packets on the network and displays the IP and MAC addresses of the sources. It allows users to export the collected data to a file and provides functionality to open the IP address in the default web browser.
 
+![ip-reporter gui](ip-reporter.png)
+
 ## Features
 
 - **Listen for UDP Packets**: Captures and displays the source IP and MAC addresses of UDP packets sent to a specific destination.
