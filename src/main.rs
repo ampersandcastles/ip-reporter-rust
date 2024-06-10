@@ -6,6 +6,7 @@ use gtk::{
 };
 use pcap::{Capture, Device};
 use std::cell::RefCell;
+use std::collections::HashSet;
 use std::rc::Rc;
 use std::sync::mpsc::{self};
 use std::sync::{Arc, Mutex};
@@ -16,7 +17,7 @@ const DESTINATION_IP: &str = "255.255.255.255";
 const SOURCE_PORT: u16 = 14236;
 const DESTINATION_PORT: u16 = 14235;
 
-#[derive(Clone)]
+#[derive(Clone, Hash, Eq, PartialEq)]
 struct PacketInfo {
     source_ip: String,
     source_mac: String,
@@ -53,10 +54,12 @@ fn main() {
         let (tx, rx) = mpsc::channel();
         let listening = Arc::new(Mutex::new(false));
         let packets = Arc::new(Mutex::new(Vec::new()));
+        let unique_packets = Arc::new(Mutex::new(HashSet::new()));
         let pool = ThreadPool::new(4);
 
         {
             let packets = Arc::clone(&packets);
+            let unique_packets = Arc::clone(&unique_packets);
             let list_store = list_store.clone();
             let status_label = Rc::clone(&status_label);
             let listening_main = Arc::clone(&listening);
@@ -65,6 +68,7 @@ fn main() {
                 let tx = tx.clone();
                 let listening = Arc::clone(&listening_main);
                 let packets = Arc::clone(&packets);
+                let unique_packets = Arc::clone(&unique_packets);
                 let status_label = Rc::clone(&status_label);
 
                 let mut is_listening = listening.lock().unwrap();
@@ -85,8 +89,11 @@ fn main() {
                         while *listening.lock().unwrap() {
                             if let Ok(packet) = cap.next_packet() {
                                 if let Some(info) = extract_packet_info(packet.data) {
-                                    packets.lock().unwrap().push(info.clone());
-                                    tx.send(info).unwrap();
+                                    let mut unique_packets_guard = unique_packets.lock().unwrap();
+                                    if unique_packets_guard.insert(info.clone()) {
+                                        packets.lock().unwrap().push(info.clone());
+                                        tx.send(info).unwrap();
+                                    }
                                 }
                             }
                         }
@@ -164,9 +171,9 @@ fn create_column(title: &str, id: i32) -> TreeViewColumn {
     gtk::prelude::TreeViewColumnExt::add_attribute(&column, &cell, "text", id);
 
     if title == "IP Address" {
-        column.set_fixed_width(50); // Set a fixed width for the IP Address column
+        column.set_fixed_width(50);
     } else {
-        column.set_fixed_width(350); // Set a fixed width for other columns
+        column.set_fixed_width(300);
     }
 
     column
