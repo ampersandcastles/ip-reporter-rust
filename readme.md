@@ -18,6 +18,7 @@ This project uses the following dependencies:
 - `reqwest`: For making HTTP requests.
 - `threadpool`: For managing a pool of threads.
 - `webbrowser`: For opening URLs in the default web browser.
+- `pnet`: For manipulating packets.
 
 ## Installation
 
@@ -40,7 +41,9 @@ To build and run this project, you need to have Rust installed. If you don't hav
    pcap = "2.0.0"
    reqwest = { version = "0.12.4", features = ["blocking"] }
    threadpool = "1.8"
-   webbrowser = "0.6"
+   pnet = "0.35.0"
+   webbrowser = "1.0.1"
+
    ```
 
 3. **Build the project**:
