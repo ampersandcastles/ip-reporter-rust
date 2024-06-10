@@ -5,12 +5,12 @@ use gtk::{
     Label, ListStore, ResponseType, TreeView, TreeViewColumn,
 };
 use pcap::{Capture, Device};
-use reqwest;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc::{self};
 use std::sync::{Arc, Mutex};
 use threadpool::ThreadPool;
+use webbrowser;
 
 const DESTINATION_IP: &str = "255.255.255.255";
 const SOURCE_PORT: u16 = 14236;
@@ -142,8 +142,9 @@ fn main() {
             if let Some(iter) = list_store.iter(path) {
                 let ip_address: String = list_store.value(&iter, 0).get().unwrap();
                 let url = format!("http://root:root@{}", ip_address);
-                if let Err(err) = reqwest::blocking::get(&url) {
-                    eprintln!("Failed to open URL: {}", err);
+
+                if webbrowser::open(&url).is_err() {
+                    eprintln!("Failed to open URL: {}", url);
                 }
             }
         });
@@ -155,9 +156,19 @@ fn main() {
 fn create_column(title: &str, id: i32) -> TreeViewColumn {
     let column = TreeViewColumn::new();
     column.set_title(title);
+    column.set_resizable(true);
+    column.set_expand(true);
+
     let cell = CellRendererText::new();
     gtk::prelude::CellLayoutExt::pack_start(&column, &cell, true);
     gtk::prelude::TreeViewColumnExt::add_attribute(&column, &cell, "text", id);
+
+    if title == "IP Address" {
+        column.set_fixed_width(50); // Set a fixed width for the IP Address column
+    } else {
+        column.set_fixed_width(350); // Set a fixed width for other columns
+    }
+
     column
 }
 
