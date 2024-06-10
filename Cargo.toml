@@ -1,0 +1,12 @@
+[package]
+name = "ip-reporter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gtk = "0.18.1"
+glib = "0.19.7"
+pcap = "2.0.0"
+reqwest = { version = "0.12.4", features = ["blocking"] }
+threadpool = "1.8"
+pnet = "0.35.0"
