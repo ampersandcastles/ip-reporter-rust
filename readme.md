@@ -81,4 +81,4 @@ Contributions are welcome! Please open an issue or submit a pull request if you 
 
 ## Acknowledgments
 
-This project was developed with the help of several open-source libraries. Special thanks to the developers of `gtk`, `glib`, `pcap`, `reqwest`, `threadpool`, and `webbrowser` crates.
+This project was developed with the help of several open-source libraries. Special thanks to the developers of `gtk`, `glib`, `pcap`, `reqwest`, `pnet`, `threadpool`, and `webbrowser` crates.
